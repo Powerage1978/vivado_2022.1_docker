@@ -1,13 +1,9 @@
 FROM ubuntu:22.04 as base-setup
 
-ARG UBUNTU_MIRROR=archive.ubuntu.com
 ARG VIVADO_RUN_FILE=Xilinx_Unified_2022.1_0420_0327
 ARG USER=skytemdev
-ENV HOME /home/$USER
-
-ENV DEBIAN_FRONTEND=noninteractive
-ENV VIVADO_RUN_FILE=${VIVADO_RUN_FILE}
-ENV XILAUTHKEY=${XILAUTHKEY}
+ARG HOME=/home/$USER
+ARG DEBIAN_FRONTEND=noninteractive
 ENV TERM xterm-256color
 
 RUN apt-get update \
@@ -39,10 +35,10 @@ RUN adduser --disabled-password --gecos '' $USER \
     && usermod -aG sudo $USER \
     && echo "$USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
     && mkdir -p /app \
-    && chown skytemdev:skytemdev /app \
-    && echo "PS1='\e[32;1m\u: \e[34m\W\e[0m\$ '" >> /home/$USER/.bashrc \
-    && mkdir -p /home/$USER/.Xilinx \
-    && chown $USER:$USER /home/$USER/.Xilinx \
+    && chown $USER:$USER /app \
+    && echo "PS1='\e[32;1m\u: \e[34m\W\e[0m\$ '" >> $HOME/.bashrc \
+    && mkdir -p $HOME/.Xilinx \
+    && chown $USER:$USER $HOME/.Xilinx \
     && mkdir -p /opt/Xilinx
 
 from setup-user as setup-vivado
@@ -51,7 +47,7 @@ USER $USER
 
 RUN --mount=type=bind,target=/data sudo /data/tmp/$VIVADO_RUN_FILE/xsetup --batch Install --agree XilinxEULA,3rdPartyEULA --config /data/install_config.txt \
     && sudo rm -rf /opt/Xilinx/Vivado/2022.1/data/parts/xilinx/devint/vault/versal \
-    && echo "source /opt/Xilinx/Vivado/2022.1/settings64.sh" >> /home/$USER/.bashrc \
-    && sed -i.bak '6,9d' /home/$USER/.bashrc
+    && echo "source /opt/Xilinx/Vivado/2022.1/settings64.sh" >> $HOME/.bashrc \
+    && sed -i.bak '6,9d' $HOME/.bashrc
 
 USER root
