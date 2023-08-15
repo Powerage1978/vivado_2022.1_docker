@@ -1,8 +1,8 @@
 # vivado_2022.1_docker
 
-This is the docker image for Vivado 2022.1, with support for Zynq-7 devices only. 
+This is the docker image for Vivado 2022.1. 
 
-Creating a new build of the the docker image, the following steps shall be followed:
+Creating a new build of the docker image, the following steps shall be followed:
 
 1. Download installer from Xilinx webpage, this requires login, and save the file in the root of this project:
 
